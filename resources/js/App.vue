@@ -1,9 +1,14 @@
 <template>
-    <h1>CloudStorage</h1>
+    <sidebar></sidebar>
 </template>
 
 <script>
+import Sidebar from "./components/Sidebar.vue";
+
 export default {
-    name: "App"
+    name: "App",
+    components: {
+        Sidebar,
+    },
 }
 </script>
