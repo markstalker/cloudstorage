@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\FileTypeRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreFileRequest extends FormRequest
@@ -13,7 +14,7 @@ class StoreFileRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +25,16 @@ class StoreFileRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'file' => ['required', 'max:20000', new FileTypeRule],
+            'expires_at' =>'date',
+            'folder_id' => 'integer|exists:folders,id',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'file.max' => 'Максимальный размер загружаемого файла - 20 МБ!',
         ];
     }
 }

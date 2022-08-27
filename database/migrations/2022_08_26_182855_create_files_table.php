@@ -17,7 +17,9 @@ return new class extends Migration
             $table->id();
             $table->uuid()->index();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('folder_id')->constrained();
+            $table->foreignId('folder_id')->nullable()->constrained();
+            $table->string('name');
+            $table->string('extension')->nullable();
             $table->dateTime('expires_at')->nullable();
             $table->timestamps();
         });
