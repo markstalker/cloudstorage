@@ -30,11 +30,11 @@
                             <tr v-for="file in files" class="bg-white border-b">
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                     <div class="flex item-center justify-center space-x-3">
-                                        <a target="_blank" :href="'api/v1/downloads/'+file.uuid" class="w-5 cursor-pointer transform hover:text-indigo-600 hover:scale-110">
+                                        <button class="w-5 transform hover:text-indigo-600 hover:scale-110" @click="downloadFile(file.id)">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                             </svg>
-                                        </a>
+                                        </button>
                                         <button class="w-5 transform hover:text-indigo-600 hover:scale-110" @click="renameFile(file.id)">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
@@ -98,9 +98,9 @@ export default {
     },
     methods: {
         uploadFile() {
-            const formData = new FormData();
+            let formData = new FormData();
             formData.append('file', this.$refs.file.files[0]);
-            const headers = { 'Content-Type': 'multipart/form-data' };
+            let headers = { 'Content-Type': 'multipart/form-data' };
 
             return axios.post('api/v1/files', formData, {headers})
                 .then(response => {
@@ -110,6 +110,22 @@ export default {
                 })
                 .catch(error => {
                     this.handleErrors(error.response.data.errors)
+                })
+        },
+        downloadFile(id) {
+            axios.get('api/v1/files/'+id+'/download', {responseType: 'blob'})
+                .then(response => {
+                    let pattern = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    let filename = response.headers['content-disposition'].match(pattern)[1];
+                    filename = filename.replace(/(^"|"$)/g, '');
+
+                    let downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
+                    let link = document.createElement('a');
+                    link.href = downloadUrl;
+                    link.setAttribute('download', filename);
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
                 })
         },
         renameFile(id) {
