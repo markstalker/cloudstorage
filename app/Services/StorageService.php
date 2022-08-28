@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\File;
+use App\Models\Folder;
 use Auth;
 use Illuminate\Http\UploadedFile;
 use Storage;
@@ -16,16 +17,23 @@ class StorageService
      * Create file in user storage.
      *
      * @param UploadedFile $uploadedFile
+     * @param int|null $folderId
      * @return File
      */
-    public static function createFile(\Illuminate\Http\UploadedFile $uploadedFile): File
+    public static function createFile(\Illuminate\Http\UploadedFile $uploadedFile, ?int $folderId): File
     {
-        $file = File::create([
+        $params = [
             'uuid' => Str::uuid(),
             'user_id' => Auth::user()->id,
             'name' => pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME),
             'extension' => $uploadedFile->getClientOriginalExtension(),
-        ]);
+        ];
+
+        if ($folderId) {
+            $params['folder_id'] = $folderId;
+        }
+
+        $file = File::create($params);
 
         $path = $file->id;
         if ($file->extension) {
@@ -34,6 +42,22 @@ class StorageService
 
         $uploadedFile->storeAs(self::FOLDER_NAME, self::getFilesystemName($file));
         return $file;
+    }
+
+    /**
+     * Create folder in user storage.
+     *
+     * @param string $name
+     * @return Folder
+     */
+    public static function createFolder(string $name): Folder
+    {
+        $folder = Folder::create([
+            'name' => $name,
+            'user_id' => Auth::user()->id,
+        ]);
+
+        return $folder;
     }
 
     /**

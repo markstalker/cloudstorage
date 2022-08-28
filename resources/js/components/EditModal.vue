@@ -13,7 +13,7 @@
                 type="form"
                 id="editFile"
                 form-class="mt-8 space-y-6"
-                v-model="file"
+                v-model="model"
                 :actions="false"
                 #default="{ value }"
             >
@@ -41,7 +41,7 @@
 import MainButton from "./MainButton.vue";
 
 export default {
-    props: ['file'],
+    props: ['model'],
     name: "EditModal",
     components: {
         MainButton,

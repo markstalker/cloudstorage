@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ShowFilesRequest;
 use App\Http\Requests\StoreFileRequest;
 use App\Http\Requests\UpdateFileRequest;
 use App\Http\Resources\FileResource;
@@ -32,9 +33,12 @@ class FileController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(ShowFilesRequest $request)
     {
-        return FileResource::collection(Auth::user()->files);
+        $folderId = $request->validated('folder_id');
+        $files = Auth::user()->files()->whereFolderId($folderId)->get();
+
+        return FileResource::collection($files);
     }
 
     /**
@@ -45,7 +49,10 @@ class FileController extends Controller
      */
     public function store(StoreFileRequest $request)
     {
-        return new FileResource(StorageService::createFile($request->file('file')));
+        $file = $request->file('file');
+        $folderId = $request->validated('folder_id');
+
+        return new FileResource(StorageService::createFile($file, $folderId));
     }
 
     /**
