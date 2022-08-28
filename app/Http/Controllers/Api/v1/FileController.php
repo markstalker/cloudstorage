@@ -38,7 +38,12 @@ class FileController extends Controller
     public function index(ShowFilesRequest $request)
     {
         $folderId = $request->validated('folder_id');
-        $files = Auth::user()->files()->whereFolderId($folderId)->get();
+
+        if (!$folderId) {
+            $files = Auth::user()->files()->whereNull('folder_id')->get();
+        } else {
+            $files = Auth::user()->files()->whereFolderId($folderId)->get();
+        }
 
         return FileResource::collection($files);
     }
