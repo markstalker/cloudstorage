@@ -18,8 +18,7 @@ dayjs.updateLocale('ru', {
 dayjs.locale('ru')
 
 async function checkAuth() {
-    const user = localStorage.getItem('user')
-    if (localStorage.getItem('token') && !user) {
+    if (localStorage.getItem('token')) {
         await axios.get('api/v1/user')
             .then(response => {
                 localStorage.setItem('user', JSON.stringify(response.data.data))
@@ -39,6 +38,15 @@ checkAuth().then(() => {
             if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
         }
         return copy;
+    }
+
+    app.config.globalProperties.formatSize = (a, b) => {
+        if (0 == a) return "";
+        let c = 1000,
+            d = b || 2,
+            e = ["Б", "КБ", "МБ", "ГБ", "ТБ"],
+            f = Math.floor(Math.log(a) / Math.log(c));
+        return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f]
     }
 
     app.config.globalProperties.getId = (array, id) => {

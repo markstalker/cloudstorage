@@ -67,6 +67,7 @@
                                         </div>
                                     </td>
                                     <td class="text-right text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                        {{ formatSize(folder.size) }}
                                     </td>
                                     <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                         {{$dayjs(folder.created_at).format('D MMMM YYYY в H:mm') }}
@@ -99,7 +100,7 @@
                                         </div>
                                     </td>
                                     <td class="text-right text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                        {{ formatBytes(file.size) }}
+                                        {{ formatSize(file.size) }}
                                     </td>
                                     <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                         {{$dayjs(file.created_at).format('D MMMM YYYY в H:mm') }}
@@ -268,14 +269,6 @@ export default {
                 .catch(error => {
                     this.handleErrors(error.response.data.errors)
                 })
-        },
-        formatBytes(a, b) {
-            if (0 == a) return "0 Байт";
-            var c = 1000,
-                d = b || 2,
-                e = ["Б", "КБ", "МБ", "ГБ", "ТБ"],
-                f = Math.floor(Math.log(a) / Math.log(c));
-            return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f]
         },
         handleErrors(errors) {
             errors = errors[Object.keys(errors)[0]]
