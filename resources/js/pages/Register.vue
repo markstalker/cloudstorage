@@ -13,7 +13,7 @@
                 :actions="false"
                 #default="{ value }"
             >
-                <div class="rounded-md shadow-sm space-y-2">
+                <div class="rounded-md shadow-sm\ space-y-2">
                     <FormKit
                         type="text"
                         name="email"
@@ -56,9 +56,7 @@
                     </div>
                 </div>
                 <div>
-                    <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Зарегистрироваться
-                    </button>
+                    <main-button class="w-full" type="submit">Зарегистрироваться</main-button>
                 </div>
             </FormKit>
         </div>
@@ -66,7 +64,12 @@
 </template>
 
 <script>
+import MainButton from "../components/MainButton.vue";
+
 export default {
+    components: {
+        MainButton,
+    },
     data() {
         return {
             formData: {},

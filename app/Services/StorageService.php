@@ -44,7 +44,7 @@ class StorageService
      */
     public static function removeFile(File $file): void
     {
-        Storage::delete(self::FOLDER_NAME.'/'.$file->full_name);
+        Storage::delete(self::FOLDER_NAME.'/'.self::getFilesystemName($file));
         $file->delete();
     }
 
