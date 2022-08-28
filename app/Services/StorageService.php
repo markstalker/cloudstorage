@@ -19,10 +19,10 @@ class StorageService
     public const FOLDER_NAME = 'files';
 
     /**
-     * Storage quota for each user (KB).
+     * Storage quota for each user (bytes). 100 MB
      * @var int
      */
-    public const QUOTA = 100000;
+    public const QUOTA = 100*1000*1000;
 
     /**
      * Create file in user storage.
@@ -112,6 +112,16 @@ class StorageService
      */
     public static function hasQuota(int $fileSize): bool
     {
-        return (Auth::user()->files->sum('size') + $fileSize) / 1000 <= self::QUOTA;
+        return (self::getSize() + $fileSize) <= self::QUOTA;
+    }
+
+    /**
+     * Get total size of user files (bytes).
+     *
+     * @return int
+     */
+    public static function getSize(): int
+    {
+        return Auth::user()->files->sum('size');
     }
 }

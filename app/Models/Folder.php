@@ -18,4 +18,9 @@ class Folder extends Model
     {
         return $this->hasMany(File::class);
     }
+
+    public function getSizeAttribute()
+    {
+        return $this->files->sum('size');
+    }
 }

@@ -13,6 +13,10 @@
             <div class="mb-1 font-bold">Зарегистрирован</div>
             <div class="">{{$dayjs(user.created_at).format('D MMMM YYYY в H:mm') }}</div>
         </div>
+        <div>
+            <div class="mb-1 font-bold">Занято</div>
+            <div class="">{{ formatSize(user.storage_size)+'/'+formatSize(user.storage_quota) }}</div>
+        </div>
     </div>
     <main-button @click.prevent="logout" class="mt-5">Выйти</main-button>
 </template>
