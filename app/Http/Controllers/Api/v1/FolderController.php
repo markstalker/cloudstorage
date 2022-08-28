@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFolderRequest;
 use App\Http\Resources\FolderResource;
 use App\Models\Folder;
+use App\Services\StorageService;
 use Auth;
 
 class FolderController extends Controller
@@ -41,7 +42,7 @@ class FolderController extends Controller
      */
     public function store(StoreFolderRequest $request)
     {
-        return new FolderResource(Folder::create($request->validated()));
+        return new FolderResource(StorageService::createFolder($request->validated('name')));
     }
 
     /**

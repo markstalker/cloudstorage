@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Rules\FileTypeRule;
+use Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreFileRequest extends FormRequest
 {
@@ -27,7 +29,10 @@ class StoreFileRequest extends FormRequest
         return [
             'file' => ['required', 'max:20000', new FileTypeRule],
             'expires_at' =>'date',
-            'folder_id' => 'integer|exists:folders,id',
+            'folder_id' => [
+                'integer',
+                Rule::exists('folders', 'id')->where(fn ($query) => $query->whereUserId(Auth::user()->id))
+            ],
         ];
     }
 
