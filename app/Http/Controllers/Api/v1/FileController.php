@@ -53,8 +53,9 @@ class FileController extends Controller
     {
         $file = $request->file('file');
         $folderId = $request->validated('folder_id');
+        $expiresAt = $request->validated('expires_at');
 
-        return new FileResource(StorageService::createFile($file, $folderId));
+        return new FileResource(StorageService::createFile($file, $expiresAt, $folderId));
     }
 
     /**

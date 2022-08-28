@@ -5,14 +5,14 @@ namespace App\Models;
 use App\Services\StorageService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 use Storage;
 
 class File extends Model
 {
-    use HasFactory;
+    use HasFactory, Prunable;
 
     protected $fillable = [
-        'uuid',
         'folder_id',
         'user_id',
         'name',
@@ -21,6 +21,22 @@ class File extends Model
     ];
 
     protected $appends = ['full_name', 'size', 'public_url'];
+
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
+
+    public function prunable()
+    {
+        return static::where('expires_at', '>=', now());
+    }
+
+    protected function pruning()
+    {
+        if ($this->downloadLink) {
+            $this->downloadLink->delete();
+        }
+    }
 
     /**
      * Build string from file name and extension.
