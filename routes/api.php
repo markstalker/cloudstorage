@@ -31,4 +31,6 @@ Route::middleware('auth:sanctum')->group(function () {
         'files' => FileController::class,
         'folders' => FolderController::class,
     ]);
+
+    Route::get('/files/{id}/download', [FileController::class, 'download']);
 });

@@ -9,6 +9,7 @@ use App\Http\Resources\FileResource;
 use App\Models\File;
 use App\Services\StorageService;
 use Auth;
+use Storage;
 use Str;
 
 class FileController extends Controller
@@ -84,5 +85,13 @@ class FileController extends Controller
         $this->isAllowed($file);
         StorageService::removeFile($file);
         return response()->noContent();
+    }
+
+    public function download(int $id)
+    {
+        $file = File::findOrFail($id);
+        $this->isAllowed($file);
+        $path = StorageService::FOLDER_NAME.'/'.StorageService::getFilesystemName($file);
+        return Storage::download($path, $file->full_name);
     }
 }
