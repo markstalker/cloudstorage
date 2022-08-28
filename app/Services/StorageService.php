@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
-use App\Exceptions\QuotaExceededException;
+use App\Models\DownloadLink;
 use App\Models\File;
 use App\Models\Folder;
 use Auth;
 use Illuminate\Http\UploadedFile;
 use Storage;
 use Str;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StorageService
 {
@@ -34,7 +35,6 @@ class StorageService
     public static function createFile(\Illuminate\Http\UploadedFile $uploadedFile, ?int $folderId): File
     {
         $params = [
-            'uuid' => Str::uuid(),
             'user_id' => Auth::user()->id,
             'name' => pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME),
             'extension' => $uploadedFile->getClientOriginalExtension(),
@@ -73,6 +73,10 @@ class StorageService
      */
     public static function removeFile(File $file): void
     {
+        if ($file->downloadLink) {
+            $file->downloadLink->delete();
+        }
+
         Storage::delete(self::FOLDER_NAME.'/'.self::getFilesystemName($file));
         $file->delete();
     }
@@ -123,5 +127,46 @@ class StorageService
     public static function getSize(): int
     {
         return Auth::user()->files->sum('size');
+    }
+
+    /**
+     * Send file to user.
+     *
+     * @param File $file
+     * @return StreamedResponse
+     */
+    public static function sendFile(File $file): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $path = self::FOLDER_NAME.'/'.self::getFilesystemName($file);
+        return Storage::download($path, $file->full_name);
+    }
+
+    /**
+     * Create public link for a user file.
+     *
+     * @param File $file
+     * @return string
+     */
+    public static function publishFile(File $file): string
+    {
+        $uuid = '';
+
+        if ($file->downloadLink) {
+            return $file->downloadLink->url;
+        }
+
+        $isUnique = false;
+
+        while (!$isUnique) {
+            $uuid = Str::uuid();
+            $isUnique = !(DownloadLink::firstWhere('uuid', $uuid));
+        }
+
+        $downloadLink = DownloadLink::create([
+            'uuid' => $uuid,
+            'file_id' => $file->id,
+        ]);
+
+        return $downloadLink->url;
     }
 }

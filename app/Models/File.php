@@ -20,7 +20,7 @@ class File extends Model
         'expires_at',
     ];
 
-    protected $appends = ['full_name', 'size'];
+    protected $appends = ['full_name', 'size', 'public_url'];
 
     /**
      * Build string from file name and extension.
@@ -45,5 +45,16 @@ class File extends Model
     {
         $filesystemName = StorageService::getFilesystemName($this);
         return Storage::size(StorageService::FOLDER_NAME.'/'.$filesystemName);
+    }
+
+    public function downloadLink()
+    {
+        return $this->hasOne(DownloadLink::class);
+    }
+
+    public function getPublicUrlAttribute()
+    {
+        $downloadLink =$this->downloadLink;
+        return $downloadLink ? $downloadLink->url : null;
     }
 }

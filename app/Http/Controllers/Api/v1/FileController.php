@@ -10,8 +10,10 @@ use App\Http\Resources\FileResource;
 use App\Models\File;
 use App\Services\StorageService;
 use Auth;
+use Illuminate\Http\JsonResponse;
 use Storage;
 use Str;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileController extends Controller
 {
@@ -94,11 +96,29 @@ class FileController extends Controller
         return response()->noContent();
     }
 
-    public function download(int $id)
+    /**
+     * Download file.
+     *
+     * @param int $id
+     * @return StreamedResponse
+     */
+    public function download(int $id): StreamedResponse
     {
         $file = File::findOrFail($id);
         $this->isAllowed($file);
-        $path = StorageService::FOLDER_NAME.'/'.StorageService::getFilesystemName($file);
-        return Storage::download($path, $file->full_name);
+        return StorageService::sendFile($file);
+    }
+
+    public function publish(int $id): \Illuminate\Http\JsonResponse
+    {
+        $file = File::findOrFail($id);
+        $this->isAllowed($file);
+        $url = StorageService::publishFile($file);
+
+        return response()->json([
+            'data' => [
+                'link' => $url,
+            ],
+        ]);
     }
 }

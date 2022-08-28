@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\Auth\AuthController;
+use App\Http\Controllers\Api\v1\DownloadController;
 use App\Http\Controllers\Api\v1\FileController;
 use App\Http\Controllers\Api\v1\FolderController;
 use App\Http\Controllers\Api\v1\UserController;
@@ -23,6 +24,8 @@ Route::prefix('auth')->group(function() {
     Route::post('register', [AuthController::class, 'register']);
 });
 
+Route::get('/downloads/{uuid}', [DownloadController::class, 'download']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'index']);
     Route::post('auth/logout', [AuthController::class, 'logout']);
@@ -32,5 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
         'folders' => FolderController::class,
     ]);
 
-    Route::get('/files/{id}/download', [FileController::class, 'download']);
+    Route::prefix('files/{id}')->group(function() {
+        Route::get('download', [FileController::class, 'download']);
+        Route::post('publish', [FileController::class, 'publish']);
+    });
 });
