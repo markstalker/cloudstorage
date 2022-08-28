@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\FileTypeRule;
+use App\Rules\HasQuotaRule;
 use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -27,7 +28,7 @@ class StoreFileRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => ['required', 'max:20000', new FileTypeRule],
+            'file' => ['required', 'max:20000', new FileTypeRule, new HasQuotaRule],
             'expires_at' =>'date',
             'folder_id' => [
                 'integer',

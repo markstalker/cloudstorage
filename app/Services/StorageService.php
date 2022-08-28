@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\QuotaExceededException;
 use App\Models\File;
 use App\Models\Folder;
 use Auth;
@@ -11,7 +12,17 @@ use Str;
 
 class StorageService
 {
+    /**
+     * Folder name in 'storage/app'. Used for users files storing.
+     * @var string
+     */
     public const FOLDER_NAME = 'files';
+
+    /**
+     * Storage quota for each user (KB).
+     * @var int
+     */
+    public const QUOTA = 100000;
 
     /**
      * Create file in user storage.
@@ -34,12 +45,6 @@ class StorageService
         }
 
         $file = File::create($params);
-
-        $path = $file->id;
-        if ($file->extension) {
-            $path .= '.'.$file->extension;
-        }
-
         $uploadedFile->storeAs(self::FOLDER_NAME, self::getFilesystemName($file));
         return $file;
     }
@@ -97,5 +102,16 @@ class StorageService
             $filename .= '.'.$file->extension;
         }
         return $filename;
+    }
+
+    /**
+     * Check if user has quota to new file upload.
+     *
+     * @param int $fileSize new file size (bytes).
+     * @return bool
+     */
+    public static function hasQuota(int $fileSize): bool
+    {
+        return (Auth::user()->files->sum('size') + $fileSize) / 1000 <= self::QUOTA;
     }
 }
