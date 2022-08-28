@@ -7,6 +7,7 @@ import { plugin, defaultConfig } from '@formkit/vue'
 import {locales, ru} from '@formkit/i18n'
 import dayjs from "dayjs"
 import Notifications from '@kyvg/vue3-notification'
+import vfmPlugin from 'vue-final-modal'
 
 import updateLocale from 'dayjs/plugin/updateLocale'
 dayjs.extend(updateLocale)
@@ -15,7 +16,6 @@ dayjs.updateLocale('ru', {
     weekdays: "Воскресенье_Понедельник_Вторник_Среда_Четверг_Пятница_Суббота".split("_")
 })
 dayjs.locale('ru')
-
 
 async function checkAuth() {
     const user = localStorage.getItem('user')
@@ -27,9 +27,24 @@ async function checkAuth() {
     }
 }
 
+
 checkAuth().then(() => {
     const app = createApp(App)
     app.config.globalProperties.$user = JSON.parse(localStorage.getItem('user'))
+
+    app.config.globalProperties.clone = (obj) => {
+        if (null == obj || 'object' != typeof obj) return obj;
+        let copy = obj.constructor();
+        for (let attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+        }
+        return copy;
+    }
+
+    app.config.globalProperties.getId = (array, id) => {
+        return array.map(data => data.id).indexOf(id)
+    }
+
     app.config.globalProperties.$dayjs = dayjs
     app.use(router)
         .use(plugin, defaultConfig({
@@ -37,6 +52,7 @@ checkAuth().then(() => {
             locale: 'ru',
         }))
         .use(Notifications)
+        .use(vfmPlugin)
         .mount("#app")
 
 })

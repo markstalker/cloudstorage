@@ -22,6 +22,7 @@
         "@vitejs/plugin-vue": "^3.0.3",
         "dayjs": "^1.11.5",
         "vue": "^3.2.36",
+        "vue-final-modal": "^3.4.4",
         "vue-router": "^4.1.5"
     }
 }
