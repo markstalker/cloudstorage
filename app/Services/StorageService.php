@@ -29,10 +29,11 @@ class StorageService
      * Create file in user storage.
      *
      * @param UploadedFile $uploadedFile
+     * @param string|null $expiresAt
      * @param int|null $folderId
      * @return File
      */
-    public static function createFile(\Illuminate\Http\UploadedFile $uploadedFile, ?int $folderId): File
+    public static function createFile(\Illuminate\Http\UploadedFile $uploadedFile, ?string $expiresAt, ?int $folderId): File
     {
         $params = [
             'user_id' => Auth::user()->id,
@@ -42,6 +43,9 @@ class StorageService
 
         if ($folderId) {
             $params['folder_id'] = $folderId;
+        }
+        if ($expiresAt) {
+            $params['expires_at'] = $expiresAt;
         }
 
         $file = File::create($params);
