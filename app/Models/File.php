@@ -20,10 +20,18 @@ class File extends Model
         'expires_at',
     ];
 
-    protected $appends = ['full_name', 'size', 'public_url'];
+    protected $appends = [
+        'full_name',
+        'size',
+        'public_url',
+    ];
 
     protected $casts = [
         'expires_at' => 'datetime',
+    ];
+
+    protected $with = [
+        'downloadLink',
     ];
 
     public function prunable()
