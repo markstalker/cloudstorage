@@ -15,7 +15,7 @@
         </div>
         <div>
             <div class="mb-1 font-bold">Занято</div>
-            <div class="">{{ formatSize(user.storage_size)+'/'+formatSize(user.storage_quota) }}</div>
+            <div class="">{{ (user.storage_size ? formatSize(user.storage_size) : 0)+'/'+formatSize(user.storage_quota) }}</div>
         </div>
     </div>
     <main-button @click.prevent="logout" class="mt-5">Выйти</main-button>
