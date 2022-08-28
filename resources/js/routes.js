@@ -33,7 +33,7 @@ export const routes = [
         name: 'storage',
         component: Storage,
         meta: {
-            title: 'Ваше хранилище',
+            title: 'Файлы',
         }
     }
 ];
