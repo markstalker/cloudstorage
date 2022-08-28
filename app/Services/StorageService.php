@@ -10,7 +10,7 @@ use Str;
 
 class StorageService
 {
-    private const FOLDER_NAME = 'files';
+    public const FOLDER_NAME = 'files';
 
     /**
      * Create file in user storage.
@@ -23,12 +23,16 @@ class StorageService
         $file = File::create([
             'uuid' => Str::uuid(),
             'user_id' => Auth::user()->id,
-            'name' => $uploadedFile->getClientOriginalName(),
+            'name' => pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME),
             'extension' => $uploadedFile->getClientOriginalExtension(),
         ]);
 
-        $filename = self::buildFileName($file->id, $uploadedFile->getClientOriginalExtension());
-        $uploadedFile->storeAs(self::FOLDER_NAME, $filename);
+        $path = $file->id;
+        if ($file->extension) {
+            $path .= '.'.$file->extension;
+        }
+
+        $uploadedFile->storeAs(self::FOLDER_NAME, self::getFilesystemName($file));
         return $file;
     }
 
@@ -40,7 +44,7 @@ class StorageService
      */
     public static function removeFile(File $file): void
     {
-        Storage::delete(self::FOLDER_NAME.'/'.self::buildFileName($file->id, $file->extension));
+        Storage::delete(self::FOLDER_NAME.'/'.$file->full_name);
         $file->delete();
     }
 
@@ -57,17 +61,16 @@ class StorageService
     }
 
     /**
-     * Build string from file name and extension.
+     * Get file name in filesystem.
      *
-     * @param string $name
-     * @param string|null $extension
+     * @param File $file
      * @return string
      */
-    private static function buildFileName(string $name, ?string $extension): string
+    public static function getFilesystemName(File $file): string
     {
-        $filename = $name;
-        if ($extension) {
-            $filename .= '.'.$extension;
+        $filename = $file->id;
+        if ($file->extension) {
+            $filename .= '.'.$file->extension;
         }
         return $filename;
     }
