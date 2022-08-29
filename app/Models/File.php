@@ -30,10 +30,6 @@ class File extends Model
         'expires_at' => 'datetime',
     ];
 
-    protected $with = [
-        'downloadLink',
-    ];
-
     public function prunable()
     {
         return static::where('expires_at', '>=', now());
