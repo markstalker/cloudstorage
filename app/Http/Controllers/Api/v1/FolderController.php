@@ -31,7 +31,7 @@ class FolderController extends Controller
      */
     public function index()
     {
-        return FolderResource::collection(Auth::user()->folders);
+        return FolderResource::collection(Auth::user()->folders()->with('files')->get());
     }
 
     /**
