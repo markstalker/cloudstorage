@@ -106,7 +106,7 @@ class StorageService
     public static function getFilesystemName(File $file): string
     {
         $filename = $file->id;
-        if ($file->extension) {
+        if ($file->extension && $file->extension != '') {
             $filename .= '.'.$file->extension;
         }
         return $filename;

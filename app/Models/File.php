@@ -32,14 +32,12 @@ class File extends Model
 
     public function prunable()
     {
-        return static::where('expires_at', '>=', now());
+        return static::where('expires_at', '<=', now());
     }
 
     protected function pruning()
     {
-        if ($this->downloadLink) {
-            $this->downloadLink->delete();
-        }
+        StorageService::removeFile($this);
     }
 
     /**
