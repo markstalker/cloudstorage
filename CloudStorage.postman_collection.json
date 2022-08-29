@@ -1,0 +1,474 @@
+{
+	"info": {
+		"_postman_id": "9ddb6435-c52d-4129-bc47-aa638a9c408b",
+		"name": "CloudStorage",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13528978"
+	},
+	"item": [
+		{
+			"name": "files",
+			"item": [
+				{
+					"name": "upload file",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.json();",
+									"pm.environment.set('file_id', responseData.data.id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "folder_id",
+									"value": "{{folder_id}}",
+									"type": "text"
+								},
+								{
+									"key": "expires_at",
+									"value": "2022-08-29 10:00:00",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/files",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"files"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get file",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/files/{{file_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"files",
+								"{{file_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get files",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/files",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"files"
+							],
+							"query": [
+								{
+									"key": "folder_id",
+									"value": "{{folder_id}}",
+									"description": "Получить файлы из конкретной папки",
+									"disabled": true
+								},
+								{
+									"key": "folder_id",
+									"value": "-1",
+									"description": "Получить файлы из корневой папки",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rename file",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/files/{{file_id}}?name=API TEST",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"files",
+								"{{file_id}}"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "API TEST"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "download file",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/files/{{file_id}}/download",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"files",
+								"{{file_id}}",
+								"download"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "publish file",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.json();",
+									"pm.environment.set('public_download_link', responseData.data.link)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/mark/CloudStorage.postman_collection.json"
+								},
+								{
+									"key": "folder_id",
+									"value": "67",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/files/{{file_id}}/publish",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"files",
+								"{{file_id}}",
+								"publish"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete file",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/files/{{file_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"files",
+								"{{file_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "folders",
+			"item": [
+				{
+					"name": "create folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.json();",
+									"pm.environment.set('folder_id', responseData.data.id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/folders?name=API TEST 2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"folders"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "API TEST 2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get folder",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/folders/{{folder_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"folders",
+								"{{folder_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get folders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/folders",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"folders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.json();",
+									"pm.environment.set('token', responseData.data.token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/login?email={{email}}&password={{password}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{email}}"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/register?email={{email}}&name={{name}}&password={{password}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{email}}"
+								},
+								{
+									"key": "name",
+									"value": "{{name}}"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "get current user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "downloads (public)",
+			"item": [
+				{
+					"name": "download file",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{public_download_link}}",
+							"host": [
+								"{{public_download_link}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.request.headers.add({key: 'Accept', value: 'application/json' })"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
