@@ -148,7 +148,9 @@ export default {
     mounted() {
         axios.all([
             axios.get('api/v1/folders'),
-            axios.get('api/v1/files'),
+            axios.get('api/v1/files', {
+                params: { folder_id: -1 },
+            }),
         ])
             .then(axios.spread((folders, files) => {
                 this.folders = folders.data.data
@@ -164,7 +166,7 @@ export default {
             this.changeFolder()
         },
         changeFolder(folder) {
-            let params = {}
+            let params = { folder_id: -1 }
 
             if (folder !== undefined) {
                 this.currentFolder = folder

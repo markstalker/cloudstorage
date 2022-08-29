@@ -39,9 +39,13 @@ class FileController extends Controller
     {
         $folderId = $request->validated('folder_id');
 
-        $files = !$folderId ?
-            Auth::user()->files()->with('downloadLink')->whereNull('folder_id')->get() :
-            Auth::user()->files()->with('downloadLink')->whereFolderId($folderId)->get();
+        if ($folderId) {
+            $files = $folderId == -1 ?
+                Auth::user()->files()->with('downloadLink')->whereNull('folder_id')->get() :
+                Auth::user()->files()->with('downloadLink')->whereFolderId($folderId)->get();
+        } else {
+            $files = Auth::user()->files()->with('downloadLink')->get();
+        }
 
         return FileResource::collection($files);
     }
