@@ -17,7 +17,6 @@ class FileFactory extends Factory
     public function definition()
     {
         return [
-            'uuid' => $this->faker->uuid,
             'user_id' => $this->faker->numberBetween(1, 10),
             'name' => $this->faker->word,
         ];
